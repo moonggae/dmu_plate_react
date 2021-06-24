@@ -15,6 +15,7 @@ import LoginPage from "views/LoginPage/LoginPage.js";
 import SignupPage from "views/SignupPage/SignupPage.js";
 import Home from "views/Home/Home.js";
 import StoreRegistration from "views/StoreRegistration/StoreRegistration";
+import DetailPage from "views/DetailPage/DetailePage";
 
 var hist = createBrowserHistory();
 
@@ -34,6 +35,7 @@ ReactDOM.render(
       <Route path="/signup" component={SignupPage} exact />
       <Route path="/store/add" component={StoreRegistration} exact />
       <Route path="/Components" component={Components} exact />
+      <Route path="/detail/:restaurantSeq" component={DetailPage} exact />
     </Switch>
     <Footer />
   </Router>,
