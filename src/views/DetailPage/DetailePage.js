@@ -13,22 +13,9 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Button from "components/CustomButtons/Button.js";
 import Parallax from "components/Parallax/Parallax.js";
-// sections for this page
-import HeaderLinks from "components/Header/HeaderLinks.js";
-import SectionBasics from "./Sections/SectionBasics.js";
-import SectionNavbars from "./Sections/SectionNavbars.js";
-import SectionTabs from "./Sections/SectionTabs.js";
-import SectionPills from "./Sections/SectionPills.js";
-import SectionNotifications from "./Sections/SectionNotifications.js";
-import SectionTypography from "./Sections/SectionTypography.js";
-import SectionJavascript from "./Sections/SectionJavascript.js";
-import SectionCarousel from "./Sections/SectionCarousel.js";
-import SectionCompletedExamples from "./Sections/SectionCompletedExamples.js";
-import SectionLogin from "./Sections/SectionLogin.js";
-import SectionExamples from "./Sections/SectionExamples.js";
-import SectionDownload from "./Sections/SectionDownload.js";
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
+
 
 import styles from "assets/jss/material-kit-react/views/components.js";
 import { SERVER_URL } from "config.js";
@@ -39,12 +26,20 @@ const useStyles = makeStyles(styles);
 
 export default function Components(props) {
   let completed = false; //초기에는 실행해야 되기때문에 false flag 변수
+  const [restaurant, setRestaurant] = useState({
+      imgList: []
+  });
+  const classes = useStyles();
+  const { ...rest } = props;
+  const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
+const { params } = props.match;
   useEffect(() => {
     const get = async () => {
-      const result = await axios.get(`${SERVER_URL}/restaurants`, API_Headers());
+      const result = await axios.get(`${SERVER_URL}/restaurants/${params.restaurantSeq}`, API_Headers());
       if(!completed) {
-        setStoreList(result.data);
+        
         console.log(result.data);
+        setRestaurant(result.data);
         const { headers } = result;
         const { authorization } = headers;
         localStorage.setItem('auth', authorization);
@@ -58,10 +53,9 @@ export default function Components(props) {
     };
   },[])
 
-  const [storeList, setStoreList] = useState([]);
-  const classes = useStyles();
-  const { ...rest } = props;
-  const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
+  
+
+
   return (
 
     
@@ -83,25 +77,35 @@ export default function Components(props) {
       
 
       <div className={classNames(classes.main, classes.mainRaised)}>
-
-      {storeList.map(obj => {
-        return (
-      <Card className={classes.storeCard}>
-        <Link to={"/detail/" + obj.restaurantSeq}><CardBody className={classes.storeCardbody}>
-          <img className={classes.storeImage} src={obj.imgList[0] ? obj.imgList[0].imgUrl : ""} />
-          <h4 className={classes.storeTitle}>{obj.name}</h4>
-          <h4 className={classes.storeDescription}>{obj.address} - {obj.category}</h4>
-        </CardBody></Link>
-      </Card>
-
-        )
+        <h2>디테일 페이지 {restaurant.restaurantSeq}</h2>
+        가게이름 : {restaurant.name} <br></br>
+        영업시간 : {restaurant.businessHours}<br></br>
+        전화번호 : {restaurant.phone}<br></br>
+        위치 : {restaurant.address}<br></br>
         
-      })}
+        분류 : {restaurant.category}
+        
+        {
+            restaurant.imgList.map(item => {
+                return (
+                    <Card className={classes.storeCard}>
+                        <CardBody className={classes.storeCardbody}>
+                        <img className={classes.storeImage} src={item.imgUrl} />
+                        </CardBody>
+                    </Card>
+                )
+            })
+        }
+
+        <div>
+            <input type="text"></input> <button>댓글작성</button>
+        </div>
+        <div>
+            댓글리스트
+        </div>
+      </div>
 
       
-
-
-      </div>
     </div>
   );
 }
