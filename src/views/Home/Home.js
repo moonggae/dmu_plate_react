@@ -41,8 +41,14 @@ export default function Components(props) {
   let completed = false; //초기에는 실행해야 되기때문에 false flag 변수
   useEffect(() => {
     const get = async () => {
-      const result = await axios.get(`${SERVER_URL}/restaurants`, API_Headers());
-      if(!completed) {
+      const result = await axios.get(`${SERVER_URL}/restaurants`, API_Headers()).catch(error => {
+        if(error.response.status === 401)
+          localStorage.removeItem('auth');
+          location.reload();
+      })
+      if(!completed && (result != undefined)) {
+        if(result !== null){}
+        console.log(result)
         setStoreList(result.data);
         console.log(result.data);
         const { headers } = result;
@@ -56,7 +62,7 @@ export default function Components(props) {
     return () => {
       completed = true;
     };
-  },[])
+  },[]);
 
   const [storeList, setStoreList] = useState([]);
   const classes = useStyles();
